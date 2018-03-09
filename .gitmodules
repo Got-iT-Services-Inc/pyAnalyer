@@ -1,0 +1,9 @@
+[submodule "pyXML"]
+	path = pyXML
+	url = https://github.com/Got-iT-Services-Inc/pyXML.git
+[submodule "pyConfig"]
+	path = pyConfig
+	url = https://github.com/Got-iT-Services-Inc/pyConfig.git
+[submodule "pyDebugger"]
+	path = pyDebugger
+	url = https://github.com/Got-iT-Services-Inc/pyDebugger.git
