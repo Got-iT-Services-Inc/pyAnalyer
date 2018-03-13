@@ -17,9 +17,11 @@ sCurPath = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe(
 #For Module Libraries
 sys.path.insert(0,sCurPath + '/pyConfig')
 sys.path.insert(0,sCurPath + '/pyDebugger')
+sys.path.insert(0,sCurPath + '/pyXML')
 
 from Config import pyConfig
 from Debug import pyDebugger
+from XML import pyXMLTag
 
 class NAnalyze:
 
@@ -40,8 +42,16 @@ class NAnalyze:
       self.DBLV6 = "DUMP"
       self.DBLVWARN = "WARNNING"
 
+      #Variables
+      self.NXML = None
+      self.XML_NMAPRUN = "nmaprun"
+
       #BEGIN!
       self.ProcessArgs(Args)
+      if self.Config.Get("Debug_All") == False:
+         os.system('clear')
+      while True:
+         self.Interpreter()
 
    def ProcessArgs(self,Args):
       self.Debugger.Log("Processing command line arguments...",DebugLevel=self.DBLV1)
@@ -54,6 +64,29 @@ class NAnalyze:
       if not '-i' in opts:
          opts['-i'] = input("Enter the file you want to process: ")
       self.Debugger.Log("Processing input file '" + opts['-i'] + "'...", DebugLevel=self.DBLV1)
+      self.Debugger.Log("Opening file...", DebugLevel=self.DBLV2)
+      with open(opts['-i'], 'r') as fxd:
+         self.Debugger.Log("Reading file...", DebugLevel=self.DBLV2)
+         sData = fxd.read()
+         sData = sData.replace("&#45;","-")
+      self.Debugger.Log("Parsing initial XML data...", DebugLevel=self.DBLV2)
+      self.NXML = pyXMLTag(sData,self.XML_NMAPRUN,self.Config.Get("Debug_All"))
+
+   def Interpreter(self):
+      print("NAnalyzer: ", end='')
+      sOpt = input("")
+      if sOpt == "exit":
+         sys.exit()
+      elif sOpt == "cmd":
+         print("Nmap command is:")
+         print("  " + self.NXML.Get_Key("args") + "\n")
+      elif sOpt == "dump keys":
+         print("XML Dump:")
+         print(str(self.NXML.Get_Keys()))
+      elif sOpt == "dump data":
+         print("Data Dump:")
+         print(self.NXML.Get_Data())
+
 
 
 if __name__ == '__main__':
